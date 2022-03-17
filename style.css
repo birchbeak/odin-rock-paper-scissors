@@ -1,0 +1,32 @@
+/*style.css*/
+
+body{
+    width:100vw;
+}
+
+#choices{
+display: flex;
+justify-content: center;
+width:auto;
+}
+
+#rock{
+    
+}
+
+#paper{
+    
+}
+
+#scissors{
+
+}
+
+#result{
+    display:flex;
+    justify-content: center;
+    text-align: center;
+    white-space: pre;
+    width:auto;
+    height:auto;
+}

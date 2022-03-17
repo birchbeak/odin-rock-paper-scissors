@@ -1,78 +1,70 @@
 //script.js
+const rock='Rock';
+const paper='Paper';
+const scissors='Scissors';
+const tied='Tied';
+const win='Win';
+const lose='Lose';
+const problem='Problem';
 
-game();
+let score=[0,0];
 
-function game(){
-    console.log("Ready to play Rock Paper Scissors?");
-    let playerScore=0;
-    let compScore=0;
+const rockButton= document.querySelector('#rock');
+const paperButton= document.querySelector('#paper');
+const scissorsButton= document.querySelector('#scissors');
+const resultBox= document.querySelector('#result');
 
-    for(let i=0; i<5; i++){
-        let choice= prompt("Choose!", "");
-        if(choice === null){
-            console.log("Cancelled");
-            return 1;
-        }
+rockButton.addEventListener('click', ()=>{playRound(rock, computerPlay())});
+paperButton.addEventListener('click', ()=>{playRound(paper, computerPlay())});
+scissorsButton.addEventListener('click', ()=>{playRound(scissors, computerPlay())});
 
-        let resultText= rpsResult(choice, computerPlay() );
-        let result = resultText.slice(4,5);
-        console.log(resultText);
-        
-        if (result === 'T') ;
-        else if(result === 'W') playerScore++;
-        else if(result === 'L') compScore++;
-        else{
-            i--;
-            console.log('Please Try Again');
-        }
-    }
-    
-    if(playerScore===compScore){
-        console.log(`The game tied ${playerScore} to ${compScore}`);
-    }
-    else if(playerScore>compScore){
-        console.log(`You won the game ${playerScore} to ${compScore}!`);
-    }
-    else{
-        console.log(`You lost the game ${playerScore} to ${compScore}`);
-    }
-}
 
 function computerPlay(){
     rand = Math.random();
     console.log(rand);
-    if(rand <=.33) return 'Rock';
-    else if (rand >.33 && rand <=.66) return 'Paper';
-    else return 'Scissors';
+    if(rand <=.33) return rock;
+    else if (rand >.33 && rand <=.66) return paper;
+    else return scissors;
 }
 
-function rpsResult(playerChoice, computerChoice){
-    if (playerChoice !==null) playerChoice= firstCapitalized(playerChoice);
+function playRound(playerChoice, computerChoice){
+    if (playerChoice !== rock && playerChoice !== paper && playerChoice !== scissors) return null;
+
+    if(playerChoice === computerChoice) handleResult(tied,playerChoice,computerChoice);
+    else if(playerChoice === rock){
+        if (computerChoice===scissors) handleResult(win,playerChoice,computerChoice);
+        if (computerChoice===paper) handleResult(lose,playerChoice,computerChoice);
+    }
+    else if(playerChoice === paper){
+        if (computerChoice===rock) handleResult(win,playerChoice,computerChoice);
+        if (computerChoice===scissors) handleResult(lose,playerChoice,computerChoice);
+    }
+    else if(playerChoice === scissors){
+        if (computerChoice===paper) handleResult(win,playerChoice,computerChoice);
+        if (computerChoice===rock) handleResult(lose,playerChoice,computerChoice);
+    }
     else return null;
-
-    if(playerChoice === computerChoice) return `You Tied! ${playerChoice} Ties ${computerChoice}`;
-    else if(playerChoice === "Rock"){
-        if (computerChoice==="Scissors") return `You Win! ${playerChoice} beats ${computerChoice}`;
-        if (computerChoice==="Paper") return `You Lose! ${computerChoice} beats ${playerChoice}`;
-    }
-    else if(playerChoice === "Paper"){
-        if (computerChoice==="Rock") return `You Win! ${playerChoice} beats ${computerChoice}`;
-        if (computerChoice==="Scissors") return `You Lose! ${computerChoice} beats ${playerChoice}`;
-    }
-    else if(playerChoice === "Scissors"){
-        if (computerChoice==="Paper") return `You Win! ${playerChoice} beats ${computerChoice}`;
-        if (computerChoice==="Rock") return `You Lose! ${computerChoice} beats ${playerChoice}`;
-    }
-    else{
-        return `Choice not recognized.`;
-    }
-
 }
 
-function firstCapitalized(str){
-    first = str.slice(0,1);
-    rest = str.slice(1);
-    first = first.toUpperCase();
-    rest = rest.toLowerCase();
-    return first+rest;
+function handleResult(res, pChoice, cChoice){
+
+    if (res===tied) 
+        resultBox.textContent=`You ${res}, ${pChoice} To ${cChoice}`;
+    else if (res===win) {
+        resultBox.textContent=`You ${res}, ${pChoice} beats ${cChoice}`
+        score[0]++;
+    ;}
+    else if(res===lose) {
+        resultBox.textContent=`You ${res}, ${cChoice} beats ${pChoice}`
+        score[1]++;
+        ;}
+    else resultBox.textContent=`There was a problem`;
+    
+    if (score[0]+score[1] === 5) {
+        if (score[0]>score[1]) resultBox.textContent+=`\nYou Won The Set${score[0]} To ${score[1]}`;
+        else if (score[0]<score[1]) resultBox.textContent+=`\nYou Lost The Set ${score[0]} To ${score[1]}`;
+        else resultBox.textContent=`What is going on??`;
+        score[0]=0;
+        score[1]=0;
+    }
 }
